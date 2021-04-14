@@ -17,6 +17,11 @@ This repository contains the following:
 - annotate_frame.py - cv2-based GUI for annotating camera fields of view
 - count_all.py - main file, runs lbt_count on all video sequences within an input directory
 
+## Requirements
+- Python 3 ( Python 3.6 or later is best)
+- CUDA 10 or later
+- Anaconda
+
 ## Instructions to run
 1. Clone this repository
 ```
