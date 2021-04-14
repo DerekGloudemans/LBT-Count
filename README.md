@@ -44,3 +44,12 @@ Additional optional arguments:
 - `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
 - `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
 - `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid.
+
+
+## Instructions to annotate frames
+By default, field of view annotations for all cameras from the 2021 AI City Challenge are included. If you want to add additional camera FOVs, you can annotate a frame from the video with source,sink, and ignore regions using:
+
+```
+python annotate_frame.py <path>
+```
+where `<path>` is the path to the directory containing example frames from the cameras you'd like to annotate.
