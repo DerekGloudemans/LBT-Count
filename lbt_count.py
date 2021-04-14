@@ -70,7 +70,7 @@ class LBT_Count():
              self.cam_num = int(cam_num)
         except:
              self.cam_num = int(cam_num[0])
-        self.output_file = "outputs/counts_{}.txt".format(video_id)
+        self.output_file = "_output/counts_{}.txt".format(video_id)
 
         self.PLOT = PLOT
         self.VERBOSE = VERBOSE

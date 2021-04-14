@@ -935,7 +935,7 @@ class LBT_Count_Draw():
         #im = cv2.resize(im, (1920,1080))
         cv2.imshow("frame",im)
         cv2.setWindowTitle("frame",str("Average frame for {}".format(self.sequence_name.split("/")[-1])))
-        cv2.imwrite(self.sequence_name.split("/")[-1].split(".")[0] + "_avg.png",im*255)
+        cv2.imwrite("_output/" + self.sequence_name.split("/")[-1].split(".")[0] + "_avg.png",im*255)
         cv2.waitKey(10)
         cv2.destroyAllWindows()
         
