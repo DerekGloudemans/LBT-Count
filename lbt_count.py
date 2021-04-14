@@ -23,9 +23,9 @@ from torchvision.ops import nms
 
 
 # filter and frame loader
-from util_track.mp_loader import FrameLoader
-from util_track.kf import Torch_KF
-from util_track.mp_writer import OutputWriter
+from util.mp_loader import FrameLoader
+from util.kf import Torch_KF
+from util.mp_writer import OutputWriter
 
 
 
@@ -39,7 +39,7 @@ class LBT_Count():
                  config_file,
                  cam_annotations,
                  class_dict,
-                 movement_conversions,
+                 VERBOSE = VERBOSE,
                  PLOT = True,
                  device_id = 0):
         """
@@ -47,46 +47,38 @@ class LBT_Count():
         ----------
         track_dir : str
             path to directory containing ordered track images
-        detector : object detector with detect function implemented that takes a frame and returns detected object
-        localizer : CNN object localizer
+        video_id: int
+            for correct outputting of counted vehicles in competition format
         kf_params : dictionary
             Contains the parameters to initialize kalman filters for tracking objects
-        det_step : int optional
-            Number of frames after which to perform full detection. The default is 1.
-        init_frames : int, optional
-            Number of full detection frames before beginning localization. The default is 3.
-        fsld_max : int, optional
-            Maximum dense detection frames since last detected before an object is removed. 
-            The default is 1.
-        matching_cutoff : int, optional
-            Maximum distance between first and second frame locations before match is not considered.
-            The default is 100.
-        iou_cutoff : float in range [0,1], optional
-            Max iou between two tracked objects before one is removed. The default is 0.5.       
-        ber : float, optional
-            How much bounding boxes are expanded before being fed to localizer. The default is 1.
+        config_file: str
+            path to configuration file with parameter settings for the counter
+        cam_annotations: dict
+            annotations of interest within the frame, generated using annotate_frame.py
+        VERBOSE: bool
+            if False, all output except for counts are suppressed
         PLOT : bool, optional
             If True, resulting frames are output. The default is True. 
+        device_id - int
+            Specifies which GPU device to use
         """
         
         self.sequence_name = track_dir
         self.sequence_id = video_id
-        
         cam_num = self.sequence_name.split("/cam_")[-1][:2]
         try:
              self.cam_num = int(cam_num)
         except:
              self.cam_num = int(cam_num[0])
-        
-        self.PLOT = PLOT
-        
         self.output_file = "outputs/counts_{}.txt".format(video_id)
+
+        self.PLOT = PLOT
+        self.VERBOSE = VERBOSE
         
         # CUDA
         use_cuda = torch.cuda.is_available()
         self.device = torch.device("cuda:{}".format(device_id) if use_cuda else "cpu")
         torch.cuda.set_device(device_id)
-        
         torch.cuda.empty_cache() 
         
         # store localizer
@@ -96,22 +88,19 @@ class LBT_Count():
         
         # store class_dict
         self.class_dict = class_dict
-        self.movement_conversions = movement_conversions
         
         # store camera annotations
         self.cam = cam_annotations
         self.sources = torch.stack([item[0] for item in self.cam["car"]]+ [item[0] for item in self.cam["truck"]])
         self.sinks = [item[1] for item in self.cam["car"]]+ [item[1] for item in self.cam["truck"]]
         self.last_sink_obj = [[-1 for idx in item[1]] for item in self.cam["car"]] + [[-1 for idx in item[1]] for item in self.cam["truck"]]
-
+        
         self.source_box_classes = torch.tensor([0 for item in self.cam["car"]]+ [1 for item in self.cam["truck"]]).to(self.device)
         self.avg_source_obj_sizes = np.zeros(len(self.sources))
 
         
         # parse config file here
         params = self.parse_config_file(config_file)[0]
-        
-        
         #store parameters
         self.s                = params["skip_step"]
         self.fsld_max         = params["fsld_max"]
@@ -130,15 +119,12 @@ class LBT_Count():
         R_red                 = params["R_red"]
         OUT                   = params["output_video_path"]
         
-        
-        self.s = 1
-        print("Warning: s is overridden on line 134!")
-       
         # store filter params
         kf_params["R"] /= R_red
         self.state_size = kf_params["Q"].shape[0]
         self.filter = Torch_KF(torch.device("cpu"),INIT = kf_params)
        
+        # get frame loader (fls controls how often FrameLoader sends an actual frame)
         fls = 1 if self.PLOT else self.s
         self.loader = FrameLoader(track_dir,self.device,downsample = 1,s = fls,show = self.PLOT)
         
@@ -149,8 +135,8 @@ class LBT_Count():
             self.writer = None
         
         time.sleep(1)
+        
         self.n_frames = len(self.loader)
-    
         self.next_obj_id = 0             # next id for a new object (incremented during tracking)
         self.fsld = {}                   # fsld[id] stores frames since last detected for object id
     
@@ -159,6 +145,8 @@ class LBT_Count():
         self.all_confs = {}
         self.all_sources = {}
         self.all_first_frames = {}
+        self.n_objs = [] # for getting avg objs per frame
+
         # for keeping track of what's using time
         self.time_metrics = {            
             "load":0,
@@ -177,11 +165,11 @@ class LBT_Count():
             }
         
         self.idx_colors = np.random.rand(100,3)
-    
-        self.n_objs = [] # for getting avg objs per frame
-        
         
     def parse_config_file(self,config_file):
+        """
+        Parses and returns config file
+        """
         all_blocks = []
         current_block = {}
         with open(config_file, 'r') as f:
@@ -585,6 +573,12 @@ class LBT_Count():
             self.filter.add(source_boxes,new_ids)
 
     def remove_sinks(self,frame_num):
+        """
+        frame_num - int
+        
+        Processes existing tracklets, determines whether any have reached sink regions,
+        and removes these tracklets, outputting the corresponding turning movement
+        """
         removals = []
         locations = self.filter.objs()
         for id in locations:
@@ -629,11 +623,14 @@ class LBT_Count():
                             
                             self.last_sink_obj[self.all_sources[id]][sink_idx] = frame_num
                             
-                            row = [runtime,self.sequence_id,frame_id,movement,cls]
                         
-                            with open(self.output_file, 'a') as f:
-                                writer = csv.writer(f,delimiter = " ")
-                                writer.writerow(row)
+                            if self.VERBOSE:
+                                row = [runtime,self.sequence_id,frame_id,movement,cls]
+                                with open(self.output_file, 'a') as f:
+                                    writer = csv.writer(f,delimiter = " ")
+                                    writer.writerow(row)
+                            else: # simply print line, all other output is supressed
+                                print(runtime, self.sequence_id,frame_id,movement,cls)
                     
                     break # move on to next object
                 
@@ -843,7 +840,7 @@ class LBT_Count():
             # print speed            
             fps = round(frame_num/(time.time() - self.start_time),2)
             fps_noload = round(frame_num/(time.time()-self.start_time-self.time_metrics["load"] - self.time_metrics["plot"]),2)
-            print("\rTracking frame {} of {}. {} FPS ({} FPS without loading)".format(frame_num,self.n_frames,fps,fps_noload), end = '\r', flush = True)
+            if self.VERBOSE: print("\rTracking frame {} of {}. {} FPS ({} FPS without loading)".format(frame_num,self.n_frames,fps,fps_noload), end = '\r', flush = True)
             self.time_metrics['plot'] += time.time() - start
 
             # load next frame  
@@ -855,7 +852,7 @@ class LBT_Count():
             self.time_metrics["load"] += time.time() - start
 
         # clean up at the end
-        print("Total sequence time : {}s".format(np.round((time.time() - self.start_time),2)))
+        if self.VERBOSE: print("Total sequence time : {}s".format(np.round((time.time() - self.start_time),2)))
         
         # computed_time = 0
         # for key in self.time_metrics:

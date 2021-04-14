@@ -2,9 +2,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 13 15:46:21 2020
-
-@author: worklab
+This file is almost identical to lbt_count.py, except it draws turning mvoements 
+on an average frame rather than actually outputting counts. Refer to lbt_count.py
+for more correct and complete comments
 """
 
 
@@ -29,7 +29,7 @@ from util_track.mp_writer import OutputWriter
 
 
 
-class LBT_Count():
+class LBT_Count_Draw():
     
     def __init__(self,
                  track_dir,
@@ -39,34 +39,9 @@ class LBT_Count():
                  config_file,
                  cam_annotations,
                  class_dict,
-                 movement_conversions,
                  PLOT = True,
                  device_id = 0):
         """
-         Parameters
-        ----------
-        track_dir : str
-            path to directory containing ordered track images
-        detector : object detector with detect function implemented that takes a frame and returns detected object
-        localizer : CNN object localizer
-        kf_params : dictionary
-            Contains the parameters to initialize kalman filters for tracking objects
-        det_step : int optional
-            Number of frames after which to perform full detection. The default is 1.
-        init_frames : int, optional
-            Number of full detection frames before beginning localization. The default is 3.
-        fsld_max : int, optional
-            Maximum dense detection frames since last detected before an object is removed. 
-            The default is 1.
-        matching_cutoff : int, optional
-            Maximum distance between first and second frame locations before match is not considered.
-            The default is 100.
-        iou_cutoff : float in range [0,1], optional
-            Max iou between two tracked objects before one is removed. The default is 0.5.       
-        ber : float, optional
-            How much bounding boxes are expanded before being fed to localizer. The default is 1.
-        PLOT : bool, optional
-            If True, resulting frames are output. The default is True. 
         """
         
         self.sequence_name = track_dir
@@ -960,7 +935,7 @@ class LBT_Count():
         #im = cv2.resize(im, (1920,1080))
         cv2.imshow("frame",im)
         cv2.setWindowTitle("frame",str("Average frame for {}".format(self.sequence_name.split("/")[-1])))
-        cv2.imwrite("movement_ims/" + self.sequence_name.split("/")[-1].split(".")[0] + "_avg.png",im*255)
+        cv2.imwrite(self.sequence_name.split("/")[-1].split(".")[0] + "_avg.png",im*255)
         cv2.waitKey(10)
         cv2.destroyAllWindows()
         

@@ -1,6 +1,6 @@
 """
 Derek Gloudemans - August 4, 2020
-This file contains a simple script to train a retinanet object detector on the UA Detrac
+This file contains a simple script to train a retinanet object localizer on the UA Detrac
 detection dataset.
 - Pytorch framework
 - Resnet-50 Backbone

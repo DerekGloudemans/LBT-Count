@@ -175,7 +175,7 @@ class Frame_Labeler():
     def load_annotations(self):
         try:
             self.cur_frame_boxes = []
-            name = "annotations/new/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
+            name = "_fov_annotations/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
             with open(name,"r") as f:
                 read = csv.reader(f)
                 for row in read:
@@ -320,7 +320,7 @@ class Frame_Labeler():
     def save_frame(self):
         if len(self.cur_frame_boxes) == 0 or not self.changed:
             return
-        name = "annotations/new/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
+        name = "_fov_annotations/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
         if os.path.exists(name): # don't overwrite
             overwrite = input("Overwrite existing file? (y/n)")
             if overwrite != "y":
