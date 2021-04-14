@@ -16,4 +16,31 @@ This repository contains the following:
 - lbt_count_draw.py - modified version of lbt_count.py for plotting vehicle turning movements
 - annotate_frame.py - cv2-based GUI for annotating camera fields of view
 - count_all.py - main file, runs lbt_count on all video sequences within an input directory
-- 
+
+## Instructions to run
+1. Clone this repository
+```
+git clone https://github.com/DerekGloudemans/LBT-count.git
+```
+
+2. Install the conda environment
+```
+cd <path to LBT-count>
+conda env create -f environment.yml
+conda activate lbt-count
+```
+
+3. Download [localizer state dict]() (should be called "localizer_retrain_112.pt") into the _config/ folder
+
+4. Run count_all.py
+```
+python count_all.py <path>
+```
+where `<path>` is the path to directory containing .mp4 video files to be processed
+
+Additional optional arguments:
+- `-gpu`   - int specifying GPU index if you have more than one GPU
+- `--v`    - print status updates (i.e. current frame and fps, current camera sequence). Also diverts count outputs to a separate file
+- `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
+- `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
+- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid.
