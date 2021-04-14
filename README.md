@@ -43,7 +43,7 @@ Additional optional arguments:
 - `--v`    - print status updates (i.e. current frame and fps, current camera sequence). Also diverts count outputs to a separate file
 - `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
 - `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
-- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid.
+- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown above.
 
 
 ## Instructions to annotate frames
