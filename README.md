@@ -1,5 +1,5 @@
 # LBT-count
-![](_readme_ims/cam_2_avg.png)
+
 
 
 *Vehicle Turning-Movement Counting using Localization-based Tracking* (LBT-count) is a fast algorithm for performing counts at intersections and along roadways. The core innovation of this algorithm is to crop existing objects from a frame and only pass these regions through a CNN for localization. A few source regions are also processed by the CNN at each frame to initialize new objects. 
@@ -48,7 +48,7 @@ Additional optional arguments:
 - `--v`    - print status updates (i.e. current frame and fps, current camera sequence). Also diverts count outputs to a separate file
 - `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
 - `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
-- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown above.
+- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown below.
 
 
 ## Instructions to annotate frames
@@ -58,3 +58,5 @@ By default, field of view annotations for all cameras from the 2021 AI City Chal
 python annotate_frame.py <path>
 ```
 where `<path>` is the path to the directory containing example frames from the cameras you'd like to annotate.
+
+![](_readme_ims/cam_2_avg.png)
