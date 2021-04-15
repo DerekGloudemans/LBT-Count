@@ -23,9 +23,9 @@ from torchvision import transforms
 
 
 # filter and frame loader
-from util_track.mp_loader import FrameLoader
-from util_track.kf import Torch_KF
-from util_track.mp_writer import OutputWriter
+from util.mp_loader import FrameLoader
+from util.kf import Torch_KF
+from util.mp_writer import OutputWriter
 
 
 
@@ -71,7 +71,6 @@ class LBT_Count_Draw():
         
         # store class_dict
         self.class_dict = class_dict
-        self.movement_conversions = movement_conversions
         
         # store camera annotations
         self.cam = cam_annotations
@@ -123,7 +122,6 @@ class LBT_Count_Draw():
         
         time.sleep(1)
         self.n_frames = len(self.loader)
-        print (self.n_frames)
         self.next_obj_id = 0             # next id for a new object (incremented during tracking)
         self.fsld = {}                   # fsld[id] stores frames since last detected for object id
     
@@ -624,17 +622,12 @@ class LBT_Count_Draw():
                         if last_sink_obj + region[6] <= frame_num: # only add object if sink is valid
                             
                             self.last_sink_obj[self.all_sources[id]][sink_idx] = frame_num
-                            
-                            row = [runtime,self.sequence_id,frame_id,movement,cls]
                         
-                            with open(self.output_file, 'a') as f:
-                                writer = csv.writer(f,delimiter = " ")
-                                writer.writerow(row)
-                                
-                                try:
-                                    self.recorded_movements[movement].append(self.all_tracks[id])
-                                except:
-                                    self.recorded_movements[movement]= [self.all_tracks[id]]
+                            try:
+                                self.recorded_movements[movement].append(self.all_tracks[id])
+                            except:
+                                self.recorded_movements[movement]= [self.all_tracks[id]]
+                    
                     
                     break # move on to next object
                 
@@ -657,9 +650,6 @@ class LBT_Count_Draw():
         self.start_time = time.time()
         [frame_num, frame,dim,original_im] = next(self.loader)            
         self.time_metrics["load"] += time.time() - self.start_time
-        
-        print (frame.shape)
-        return 0
     
         while frame_num != -1: 
             
@@ -884,6 +874,8 @@ class LBT_Count_Draw():
         self.running_avg_frame /= self.running_avg_count
         
         return total_time
+    
+    
     
     def plot_movements(self):
         

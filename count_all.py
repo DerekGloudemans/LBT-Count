@@ -97,17 +97,16 @@ if __name__ == "__main__":
      try:
         default_dir = "/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A"
         parser = argparse.ArgumentParser()
+        
         parser.add_argument("-directory",help = "Should contain video files cam_1.mp4,... etc.",default = default_dir)
-        parser.add_argument("-config_directory",help = "Should contain cam_1.config, etc. one config per camera",default = default_config)
         parser.add_argument("-gpu",help = "gpu idx from 0-3", type = int,default = 0)
         parser.add_argument("--show",action = "store_true")
-        parser.add_argument("-range",type = str, default = "1-100")
-        parser.add_argument("-v",action = "store_true")
-        parser.add_argument("-draw",action = "store_true")
+        parser.add_argument("-range", help =  "(ex. 3-10)",type = str, default = "1-100")
+        parser.add_argument("--v",action = "store_true")
+        parser.add_argument("--draw",action = "store_true")
 
         args = parser.parse_args()
         input_dir = args.directory
-        
         GPU_ID = args.gpu
         SHOW = args.show
         low = int(args.range.split("-")[0])
@@ -115,9 +114,9 @@ if __name__ == "__main__":
         subset = [i for i in range(low,high)]
         VERBOSE = args.v
         DRAW = args.draw
-        
+
      except:
-         config_dir = "./counting_config"
+         print("Invalid argument- using default settings")
          input_dir = "/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A"
          GPU_ID = 0
          SHOW = True
@@ -139,7 +138,7 @@ if __name__ == "__main__":
                     }
      
      # parameter configs
-     config_dir = "./counting_config"
+     config_dir = "./_fov_config"
  
      # get localizer
      loc_cp = "./_config/localizer_retrain_112.pt"
@@ -157,44 +156,46 @@ if __name__ == "__main__":
      videos = []
      for item in sequences:
          if ".mp4" in item:
-             videos.append(sequences)
+             videos.append(item)
      sequences = videos
      sequences = sort_human(sequences)
 
-     # override sequences
-#     sequences = ['/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1_dawn.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_2.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_2_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_3.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_3_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4_dawn.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5_dawn.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_6.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_6_snow.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7_dawn.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7_rain.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_8.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_9.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_10.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_11.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_12.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_13.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_14.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_15.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_16.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_17.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_18.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_19.mp4',
-#                     '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_20.mp4' ]
+     if False:
+        # override sequences
+        sequences = ['/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1_dawn.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_1_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_2.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_2_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_3.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_3_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4_dawn.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_4_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5_dawn.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_5_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_6.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_6_snow.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7_dawn.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_7_rain.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_8.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_9.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_10.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_11.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_12.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_13.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_14.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_15.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_16.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_17.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_18.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_19.mp4',
+                    '/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A/cam_20.mp4' ]
      
        
+     # main loop
      time_taken = 0
      for video_id,sequence in enumerate(sequences):
          
@@ -220,7 +221,7 @@ if __name__ == "__main__":
              config = os.path.join(config_dir,"default.config".format(cam_num))
          
          # parse camera annotations
-         annotation_file = "./annotations/new/cam_{}.csv".format(cam_num)
+         annotation_file = "./_fov_annotation/cam_{}.csv".format(cam_num)
          cam_annotations = load_annotations(annotation_file)
          
          if not DRAW:
@@ -237,6 +238,7 @@ if __name__ == "__main__":
                                   device_id = GPU_ID)
              time,n_objs = tracker.track()
              time_taken += time
+        
          else:
              tracker = LBT_Count_Draw( sequence,
                                   video_id+1,
@@ -245,10 +247,10 @@ if __name__ == "__main__":
                                   config,
                                   cam_annotations,
                                   class_dict,
-                                  VERBOSE = VERBOSE,
                                   PLOT = SHOW,
                                   device_id = GPU_ID)
              time = tracker.track()
+             tracker.plot_movements()
              n_objs = "[unknown]"
              time_taken += time
          

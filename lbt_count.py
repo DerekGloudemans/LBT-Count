@@ -39,7 +39,7 @@ class LBT_Count():
                  config_file,
                  cam_annotations,
                  class_dict,
-                 VERBOSE = VERBOSE,
+                 VERBOSE = True,
                  PLOT = True,
                  device_id = 0):
         """
