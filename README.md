@@ -21,7 +21,7 @@
 
 ## Requirements
 - Python 3 ( Python 3.6 or later is best)
-- CUDA 10 or later
+- CUDA 10.2 ( if you have CUDA 11, simply reinstall `pytorch` after step 2 below using: ```pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html```
 
 ## Instructions to run
 1. Clone this repository:
@@ -44,7 +44,7 @@ Then, any time you open a new terminal and cd to the repo, you can reactivate th
 source <path to LBT-count>/bin/activate
 ```
 
-Strangely enough the non-conda environment runs about 25% faster than the `conda` environement with the same packages, so we recommend you use the `venv/pip` installation above. That being said, if you prefer `conda`:
+Strangely enough the non-conda environment runs about 25% faster than the `conda` environment with the same packages, so we recommend you use the `venv/pip` installation above. That being said, if you prefer `conda`:
 
 2b. Use `conda` instead:
 
