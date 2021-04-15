@@ -24,12 +24,12 @@
 - CUDA 10.2 ( if you have CUDA 11, simply reinstall `pytorch` after step 2 below using: ```pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html```
 
 ## Instructions to run
-1. Clone this repository:
+1. **Clone this repository**:
 ```
 git clone https://github.com/DerekGloudemans/LBT-count.git
 ```
 
-2a. (Recommended): Install virtual python environment using `pip`:
+2a. **(Recommended): Install virtual python environment using `pip`**:
 
 ```
 cd <path to LBT-count>
@@ -54,9 +54,9 @@ conda env create -f environment.yml
 conda activate lbt-count
 ```
 
-3. Download [localizer state dict](https://github.com/DerekGloudemans/LBT-count/releases/download/v0.2/localizer_retrain_112.pt) (should be called "localizer_retrain_112.pt") into the `_config/` folder
+3. **Download [localizer state dict](https://github.com/DerekGloudemans/LBT-count/releases/download/v0.2/localizer_retrain_112.pt) into the `_config/` folder.** (It should be called "localizer_retrain_112.pt") 
 
-4. Run count_all.py
+4. **Run count_all.py**:
 ```
 python count_all.py <path>
 ```
