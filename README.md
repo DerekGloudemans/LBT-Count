@@ -45,10 +45,10 @@ where `<path>` is the path to directory containing .mp4 video files to be proces
 
 Additional optional arguments:
 - `-gpu`   - int specifying GPU index if you have more than one GPU
+- `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
 - `--v`    - print status updates (i.e. current frame and fps, current camera sequence). Also diverts count outputs to a separate file
 - `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
-- `-range` - specify a 1-indexed integer range of video sequences (i.e. 1-10) within the overall directory to process (useful for splitting task between multiple GPUs)
-- `-draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown below.
+- `--draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown below.
 
 
 ## Instructions to annotate frames
