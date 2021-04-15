@@ -16,6 +16,8 @@ This repository contains the following:
 - `lbt_count_draw.py` - modified version of lbt_count.py for plotting vehicle turning movements
 - `annotate_frame.py` - cv2-based GUI for annotating camera fields of view
 - `count_all.py` - main file, runs lbt_count on all video sequences within an input directory
+- `environment.yml` - use this to create a virtual env for this repository if using `conda`
+- `requirements.txt` - use this to create a virtual env for this repository if using `pip`
 
 ## Requirements
 - Python 3 ( Python 3.6 or later is best)
