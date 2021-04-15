@@ -50,6 +50,13 @@ Additional optional arguments:
 - `--show` - plot each frame as vehicles are tracked and counted (significantly slows computation)
 - `--draw`  - code outputs an image of the camera field of view with every counted vehicle's trajectory overlaid as shown below.
 
+Thus, the following example call:
+
+```
+python count_all.py -gpu 1 -range 2-4 --show
+```
+
+executes on the machine's 1-index gpu, starts on sequence 2 (the second sequence since AI City Challenge sequence numbering is 1-indexed), computes up to but not including sequence 4, and shows each frame using OpenCV as it is processed.
 
 ## Instructions to annotate frames
 By default, field of view annotations for all cameras from the 2021 AI City Challenge are included. If you want to add additional camera FOVs, you can annotate a frame from the video with source,sink, and ignore regions using:
