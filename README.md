@@ -24,16 +24,26 @@
 - CUDA 10 or later
 
 ## Instructions to run
-1. Clone this repository
+1. Clone this repository:
 ```
 git clone https://github.com/DerekGloudemans/LBT-count.git
 ```
 
-2. Install the conda environment
+2a. Install the conda environment:
+
 ```
 cd <path to LBT-count>
 conda env create -f environment.yml
 conda activate lbt-count
+```
+
+2b. If using pip:
+
+```
+cd <path to LBT-count>
+python -m venv <path to LBT-count>
+source <path to LBT-count>/bin/activate
+pip install -r requirements.txt
 ```
 
 3. Download [localizer state dict](https://github.com/DerekGloudemans/LBT-count/releases/download/v0.2/localizer_retrain_112.pt) (should be called "localizer_retrain_112.pt") into the _config/ folder
