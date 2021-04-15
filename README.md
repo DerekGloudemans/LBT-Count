@@ -29,21 +29,29 @@
 git clone https://github.com/DerekGloudemans/LBT-count.git
 ```
 
-2a. Install the conda environment:
-
-```
-cd <path to LBT-count>
-conda env create -f environment.yml
-conda activate lbt-count
-```
-
-2b. If using pip:
+2a. If using pip:
 
 ```
 cd <path to LBT-count>
 python -m venv <path to LBT-count>
 source <path to LBT-count>/bin/activate
 pip install -r requirements.txt
+```
+
+Then, any time you open a new terminal and cd to the repo, you can reactivate the virtual environment with:
+
+```
+source <path to LBT-count>/bin/activate
+```
+
+Strangely enough the non-conda environment runs about 25% faster than the `conda` environement with the same packages, so we recommend you use the `venv/pip` installation above. That being said, if you prefer `conda`:
+
+2b. Use `conda` instead:
+
+```
+cd <path to LBT-count>
+conda env create -f environment.yml
+conda activate lbt-count
 ```
 
 3. Download [localizer state dict](https://github.com/DerekGloudemans/LBT-count/releases/download/v0.2/localizer_retrain_112.pt) (should be called "localizer_retrain_112.pt") into the `_config/` folder
