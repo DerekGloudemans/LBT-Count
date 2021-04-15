@@ -22,7 +22,6 @@
 ## Requirements
 - Python 3 ( Python 3.6 or later is best)
 - CUDA 10 or later
-- Anaconda
 
 ## Instructions to run
 1. Clone this repository
