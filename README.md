@@ -29,7 +29,7 @@
 git clone https://github.com/DerekGloudemans/LBT-count.git
 ```
 
-2a. If using pip:
+2a. (Recommended): Install virtual python environment using `pip`:
 
 ```
 cd <path to LBT-count>
@@ -46,7 +46,7 @@ source <path to LBT-count>/bin/activate
 
 Strangely enough the non-conda environment runs about 25% faster than the `conda` environment with the same packages, so we recommend you use the `venv/pip` installation above. That being said, if you prefer `conda`:
 
-2b. Use `conda` instead:
+2b. (Not recommended): Use `conda` instead:
 
 ```
 cd <path to LBT-count>
