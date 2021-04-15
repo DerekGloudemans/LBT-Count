@@ -35,7 +35,7 @@ conda env create -f environment.yml
 conda activate lbt-count
 ```
 
-3. Download [localizer state dict]() (should be called "localizer_retrain_112.pt") into the _config/ folder
+3. Download [localizer state dict](https://github.com/DerekGloudemans/LBT-count/releases/download/v0.2/localizer_retrain_112.pt) (should be called "localizer_retrain_112.pt") into the _config/ folder
 
 4. Run count_all.py
 ```
