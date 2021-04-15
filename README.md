@@ -4,7 +4,7 @@
 
 *Vehicle Turning-Movement Counting using Localization-based Tracking* (LBT-count) is a fast algorithm for performing counts at intersections and along roadways. The core innovation of this algorithm is to crop existing objects from a frame and only pass these regions through a CNN for localization. A few source regions are also processed by the CNN at each frame to initialize new objects. 
 
-This repository contains the following:
+## Contents
 - `_fov_config/` - .config files containing parameter settings for each unique camera field of view
 - `_fov_annotations/` - csv files containing relevant regions (sources, sinks, and ignored regions) for each unique camera field of view
 - `_config/` - other config files (Kalman filter parameters and localizer state dict)
