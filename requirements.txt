@@ -74,8 +74,6 @@ Pygments==2.6.1
 pylint==2.4.4
 pyOpenSSL==19.1.0
 pyparsing==2.4.6
-pyperf @ file:///tmp/build/80754af9/pyperf_1599212355546/work
-pyperformance @ file:///tmp/build/80754af9/pyperformance_1599214569873/work
 pyrsistent==0.16.0
 PySocks==1.7.1
 python-dateutil==2.8.1
