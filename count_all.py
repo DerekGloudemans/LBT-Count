@@ -95,10 +95,10 @@ def load_annotations(annotation_file):
 if __name__ == "__main__":
     
      try:
-        default_dir = "/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/Dataset_A"
+        
         parser = argparse.ArgumentParser()
         
-        parser.add_argument("-directory",help = "Should contain video files cam_1.mp4,... etc.",default = default_dir)
+        parser.add_argument("directory",help = "Should contain video files cam_1.mp4,... etc.")
         parser.add_argument("-gpu",help = "gpu idx from 0-3", type = int,default = 0)
         parser.add_argument("--show",action = "store_true")
         parser.add_argument("-range", help =  "(ex. 3-10)",type = str, default = "1-100")
@@ -107,6 +107,8 @@ if __name__ == "__main__":
 
         args = parser.parse_args()
         input_dir = args.directory
+        
+            
         GPU_ID = args.gpu
         SHOW = args.show
         low = int(args.range.split("-")[0])
