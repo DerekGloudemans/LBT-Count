@@ -33,7 +33,7 @@ import matplotlib.pyplot as plt
 
 try:
     sys.path.insert(0,os.getcwd)
-    from detrac.detrac_plot import pil_to_cv, plot_bboxes_2d
+    from util.detrac_plot import pil_to_cv, plot_bboxes_2d
 except:
     from detrac_plot import pil_to_cv, plot_bboxes_2d,plot_text
 
@@ -195,7 +195,7 @@ class LocMulti_Dataset(data.Dataset):
             labels,metadata = label_list[track_list[i].split("/")[-1]]
             
             # each iteration of the loop gets one image
-            print (len(images),len(labels))
+            #print (len(images),len(labels))
             for j in range(len(images)):
                 try:
                     image = images[j]
@@ -210,52 +210,52 @@ class LocMulti_Dataset(data.Dataset):
                     # so we just pass because there are no objects or labels anyway
                     self.all_data.append((images[j],[],metadata))
                     #print("Error: tried to load label {} for track {} but it doesnt exist. Labels is length {}".format(j,track_list[i],len(labels))) 
+        
+        # also use i24 data        
+        if i24_lab is not None:            
+                self.labels_i24 = []
+                self.data_i24 = []
                 
+                df = pd.read_csv(i24_lab)
+                im_names = df['filename'].unique()
+                im_names = sorted(im_names)
+                
+                # get all data for a given image
+                for item in im_names:
+                    rows = df[df.filename == item]
+                    rows = rows.to_numpy()
                     
-        
-        self.labels_i24 = []
-        self.data_i24 = []
-        
-        df = pd.read_csv(i24_lab)
-        im_names = df['filename'].unique()
-        im_names = sorted(im_names)
-        
-        # get all data for a given image
-        for item in im_names:
-            rows = df[df.filename == item]
-            rows = rows.to_numpy()
-            
-            gathered = []
-            try:
-                for row in rows:
-                    bbox = json.loads(row[5])
-                    if bool(bbox): # not empty
-                        bbox = [bbox["x"],bbox["y"],bbox["width"]+bbox["x"],bbox["y"] + bbox["height"]]
-                        cls = json.loads(row[6])["class"]
-                        #bbox.append(i24_convert[i24_class_dict[cls]])
-                        bbox = np.array(bbox)
-                        #gathered.append(bbox)
-                        
-                        obj_dict = {"class_num":i24_convert[i24_class_dict[cls]],
-                                    "bbox": bbox}
-                        gathered.append(obj_dict)
-                        
-            except:
-                pass
-            
-            gathered = np.array(gathered)
-            self.labels_i24.append(gathered)
-            self.data_i24.append(os.path.join(i24_im,item))
-            
-        
-        # indices = [i for i in range(len(self.labels_i24))]
-        # random.seed(5)
-        # random.shuffle(indices)
-            
-            
-        for i in range(len(self.labels_i24)):
-            for duplicate in range(15):
-                self.all_data.append((self.data_i24[i],self.labels_i24[i],[]))
+                    gathered = []
+                    try:
+                        for row in rows:
+                            bbox = json.loads(row[5])
+                            if bool(bbox): # not empty
+                                bbox = [bbox["x"],bbox["y"],bbox["width"]+bbox["x"],bbox["y"] + bbox["height"]]
+                                cls = json.loads(row[6])["class"]
+                                #bbox.append(i24_convert[i24_class_dict[cls]])
+                                bbox = np.array(bbox)
+                                #gathered.append(bbox)
+                                
+                                obj_dict = {"class_num":i24_convert[i24_class_dict[cls]],
+                                            "bbox": bbox}
+                                gathered.append(obj_dict)
+                                
+                    except:
+                        pass
+                    
+                    gathered = np.array(gathered)
+                    self.labels_i24.append(gathered)
+                    self.data_i24.append(os.path.join(i24_im,item))
+                    
+                
+                # indices = [i for i in range(len(self.labels_i24))]
+                # random.seed(5)
+                # random.shuffle(indices)
+                    
+                    
+                for i in range(len(self.labels_i24)):
+                    for duplicate in range(15):
+                        self.all_data.append((self.data_i24[i],self.labels_i24[i],[]))
         
         
         random.shuffle(self.all_data)

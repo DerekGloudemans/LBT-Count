@@ -175,7 +175,7 @@ class Frame_Labeler():
     def load_annotations(self):
         try:
             self.cur_frame_boxes = []
-            name = "_fov_annotations/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
+            name = "_fov_annotation/{}.csv".format(self.frames[self.frame-1].split("/")[-1].split(".")[0])
             with open(name,"r") as f:
                 read = csv.reader(f)
                 for row in read:
@@ -439,7 +439,7 @@ if __name__ == "__main__":
 
      except:
         dir = "/home/worklab/Data/cv/AIC21_Track1_Vehicle_Counting_full/AIC21_Track1_Vehicle_Counting/screen_shot_with_roi_and_movement"
-            
+        dir = "/home/worklab/Desktop/i24-annotate-frames"
         test = Frame_Labeler(dir)
         test.run()
             

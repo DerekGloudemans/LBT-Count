@@ -11,34 +11,28 @@ detection dataset.
 ### Imports
 
 import os
-import sys,inspect
+import sys
 import numpy as np
 import random 
-import math
-import time
+
 import cv2
 random.seed = 0
 
-import cv2
-from PIL import Image
 import torch
 from torch import nn, optim
 from torch.utils import data
-from torchvision import transforms,models
-from torchvision.transforms import functional as F
-import matplotlib.pyplot  as plt
 import collections
 
+import argparse
 
 # add relevant packages and directories to path
-localizer_path = os.path.join(os.getcwd(),"models","pytorch_retinanet_detector")
+localizer_path = os.path.join(os.getcwd(),"model","pytorch_retinanet_detector")
 sys.path.insert(0,localizer_path)
+from model.pytorch_retinanet_detector.retinanet import model
+
 detrac_util_path = os.path.join(os.getcwd(),"util_detrac")
 sys.path.insert(0,detrac_util_path)
-
-#from _detectors.pytorch_retinanet.retinanet import model, csv_eval 
-from models.pytorch_retinanet_detector.retinanet import model
-from util_detrac.ai_multi_localization_dataset import LocMulti_Dataset, class_dict,collate
+from util.ai_multi_localization_dataset import LocMulti_Dataset, class_dict,collate
 
 
 # surpress XML warnings
@@ -245,19 +239,38 @@ def to_cpu(checkpoint):
 
 if __name__ == "__main__":
     
+    try:
+        parser = argparse.ArgumentParser()
+        
+        parser.add_argument("detrac_data_directory",help = "Path to main UA DETRAC data directory")
+        parser.add_argument("-gpus",help = "comma separated list (e.g. 0,1)", type = str,default = "0")
+
+        args = parser.parse_args()
+        detrac_path = args.detrac_data_directory
+        gpus = [int(item) for item in args.gpus.split(",")] 
+        
+        detrac_image_dir = detrac_path + "/DETRAC-train-data"
+        detrac_label_dir = detrac_path + "/DETRAC-Train-Annotations-XML-v3"
+        
+    except:
+        detrac_image_dir = "/home/worklab/Data/cv/Detrac/DETRAC-train-data"
+        detrac_label_dir = "/home/worklab/Data/cv/Detrac/DETRAC-Train-Annotations-XML-v3"
+        gpus = [0]
+    
+    print("Starting localizer training with GPUs: {}".format(gpus))
+    
     # define parameters
     depth = 50
     num_classes = 5
+    
     patience = 0
     max_epochs = 50
-    start_epoch = 3
-    checkpoint_file = "aicity_localizer112_retinanet_epoch2_.pt"
+    start_epoch = 0
+    checkpoint_file = None
 
-    # Paths to data here
-    detrac_image_dir = "/home/worklab/Data/cv/Detrac/DETRAC-train-data"
-    detrac_label_dir = "/home/worklab/Data/cv/Detrac/DETRAC-Train-Annotations-XML-v3"
-    i24_label_dir = "/home/worklab/Data/cv/i24_2D_October_2020/labels.csv"
-    i24_image_dir = "/home/worklab/Data/cv/i24_2D_October_2020/ims"
+    # Paths to auxiliary data (if used) here
+    i24_label_dir = None #"/home/worklab/Data/cv/i24_2D_October_2020/labels.csv"
+    i24_image_dir = None #"/home/worklab/Data/cv/i24_2D_October_2020/ims"
     
     ###########################################################################
 
@@ -281,6 +294,7 @@ if __name__ == "__main__":
         train_data
     except:
         # datasets here defined for UA Detrac Dataset
+        print("Loading data..")
         train_data = LocMulti_Dataset(detrac_image_dir,detrac_label_dir,i24_image_dir,i24_label_dir,cs = 112,mode = "train")
         val_data = LocMulti_Dataset(detrac_image_dir,detrac_label_dir,i24_image_dir,i24_label_dir,cs = 112, mode = "val")
         
@@ -300,7 +314,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if use_cuda else "cpu")
     if use_cuda:
         if torch.cuda.device_count() > 1:
-            retinanet = torch.nn.DataParallel(retinanet,device_ids = [0,1,2])
+            retinanet = torch.nn.DataParallel(retinanet,device_ids = gpus)
             retinanet = retinanet.to(device)
         else:
             retinanet = retinanet.to(device)

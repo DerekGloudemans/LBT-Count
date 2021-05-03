@@ -117,7 +117,6 @@ class LBT_Count():
         self.t_cutoff         = params["t_cutoff"]
         self.keep_classes     = params["keep_classes"]
         R_red                 = params["R_red"]
-        OUT                   = params["output_video_path"]
         
         # store filter params
         kf_params["R"] /= R_red

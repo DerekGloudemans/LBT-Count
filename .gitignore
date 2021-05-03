@@ -1,2 +1,6 @@
 
 *.pt
+
+model/pytorch_retinanet_detector/images/
+
+*.pth
