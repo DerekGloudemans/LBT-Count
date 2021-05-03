@@ -86,3 +86,24 @@ python annotate_frame.py <path>
 where `<path>` is the path to the directory containing example frames from the cameras you'd like to annotate.
 
 ![](_readme_ims/cam_2_avg.png)
+
+
+## Instructions to train localizer
+Download [UA DETRAC Dataset](https://detrac-db.rit.albany.edu/download) training sequences and labels (XML-v3) and place both directories in a parent directory. You'll need to create an account if you've never used the dataset before. Then Run
+
+```
+python train_localizer.py <path to UA DETRAC parent directory>
+```
+
+with optional parameter `-gpus` - comma separated list of GPU indices to use (i.e. 0,1,2,3).
+
+After training, select the epoch checkpoint desired and transfer it from GPU to CPU with:
+
+```
+python
+>>>
+from train_localizer import to_cpu
+to_cpu(<path to checkpoint>, device_ids = [<comma-separate list of GPU indices used during training]) 
+exit()
+
+```
