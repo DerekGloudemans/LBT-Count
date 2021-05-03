@@ -214,16 +214,16 @@ def iou(a,b):
     return mean_iou
     
 
-def to_cpu(checkpoint):
+def to_cpu(checkpoint,device_ids = [0,1,2]):
     """
     """
     try:
         retinanet = model.resnet50(5)
-        retinanet = nn.DataParallel(retinanet,device_ids = [0,1,2])
+        retinanet = nn.DataParallel(retinanet,device_ids = device_ids)
         retinanet.load_state_dict(torch.load(checkpoint))
     except:
         retinanet = model.resnet34(5)
-        retinanet = nn.DataParallel(retinanet,device_ids = [0,1,2])
+        retinanet = nn.DataParallel(retinanet,device_ids = device_ids)
         retinanet.load_state_dict(torch.load(checkpoint))
         
     retinanet = nn.DataParallel(retinanet, device_ids = [0])

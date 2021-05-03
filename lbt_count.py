@@ -127,11 +127,11 @@ class LBT_Count():
         fls = 1 if self.PLOT else self.s
         self.loader = FrameLoader(track_dir,self.device,downsample = 1,s = fls,show = self.PLOT)
         
-        # create output image writer
-        if OUT is not None:
-            self.writer = OutputWriter(OUT)
-        else:
-            self.writer = None
+        # # create output image writer
+        # if OUT is not None:
+        #     self.writer = OutputWriter(OUT)
+        # else:
+        #     self.writer = None
         
         time.sleep(1)
         
