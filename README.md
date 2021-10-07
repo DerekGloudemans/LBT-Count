@@ -1,6 +1,6 @@
 # LBT-count
 
-Please note that the underlying fast tracking method for this work has since been published with the name Crop-based Tracking rather than Localization-based Tracking, but is otherwise equivalent. For continuity I did not change the name to CBT throughout this work. CBT code can be found [here](https://github.com/DerekGloudemans/crop-tracking-detrac)
+Please note that the underlying fast tracking method for this work has since been published with the name Crop-based Tracking rather than Localization-based Tracking, but is otherwise equivalent. For continuity I did not change the name to CBT throughout this work. CBT code can be found [here](https://github.com/DerekGloudemans/crop-tracking-detrac).
 
 *Vehicle Turning-Movement Counting using Localization-based Tracking* (LBT-count) is a fast algorithm for performing counts at intersections and along roadways. The core innovation of this algorithm is to crop existing objects from a frame and only pass these regions through a CNN for localization. A few source regions are also processed by the CNN at each frame to initialize new objects. 
 
